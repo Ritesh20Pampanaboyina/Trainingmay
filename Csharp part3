@@ -1,0 +1,573 @@
+Module 14: Access Modifiers and Constructors in C#
+Concepts Covered:
+
+Access Modifiers in C#
+Default Accessibility Level for Class, Methods, and Structures
+Constructor Execution Sequence in Inheritance Scenario
+Default Constructor and Parameterized Constructor
+Constructor in Structure in C#
+Calling Base Class Constructor in Derived Class Constructor
+Using this Keyword to Call One Constructor from Another
+Public, Private, and Protected Constructors
+Understanding Static Constructor
+Implementing Singleton Design Pattern and Understanding Static Class
+Access Modifiers in C#
+Explanation: Access modifiers control the visibility of class members. The common access modifiers in C# are public, private, protected, and internal.
+
+Example:
+class Person
+{
+    public string Name;  // Accessible from anywhere
+    private int age;     // Accessible only within this class
+
+    public void SetAge(int age)
+    {
+        this.age = age;
+    }
+
+    public int GetAge()
+    {
+        return age;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person person = new Person();
+        person.Name = "Alice";
+        person.SetAge(25);
+
+        Console.WriteLine("Name: " + person.Name);
+        Console.WriteLine("Age: " + person.GetAge());
+    }
+}
+Name: Alice
+Age: 25
+
+Default Constructor and Parameterized Constructor
+Explanation:
+
+Default Constructor: A constructor that takes no parameters.
+Parameterized Constructor: A constructor that takes one or more parameters.
+Example:
+class Car
+{
+    public string Make { get; set; }
+    public string Model { get; set; }
+
+    // Default constructor
+    public Car()
+    {
+        Make = "Unknown";
+        Model = "Unknown";
+    }
+
+    // Parameterized constructor
+    public Car(string make, string model)
+    {
+        Make = make;
+        Model = model;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Car car1 = new Car();  // Calls the default constructor
+        Car car2 = new Car("Toyota", "Camry");  // Calls the parameterized constructor
+
+        Console.WriteLine("Car 1: " + car1.Make + " " + car1.Model);
+        Console.WriteLine("Car 2: " + car2.Make + " " + car2.Model);
+    }
+}
+Car 1: Unknown Unknown
+Car 2: Toyota Camry
+
+Calling Base Class Constructor in Derived Class Constructor
+Explanation: You can use the base keyword to call a base class constructor from a derived class constructor.
+
+Example:
+class Animal
+{
+    public string Name { get; set; }
+
+    public Animal(string name)
+    {
+        Name = name;
+    }
+}
+
+class Dog : Animal
+{
+    public string Breed { get; set; }
+
+    public Dog(string name, string breed) : base(name)
+    {
+        Breed = breed;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine("Name: " + Name + ", Breed: " + Breed);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog dog = new Dog("Buddy", "Golden Retriever");
+        dog.DisplayInfo();
+    }
+}
+Name: Buddy, Breed: Golden Retriever
+
+Using this Keyword to Call One Constructor from Another
+Explanation: The this keyword can be used to call another constructor within the same class. This is useful when you have multiple constructors with different parameter lists.
+
+Example:
+class Car
+{
+    public string Make { get; set; }
+    public string Model { get; set; }
+    public int Year { get; set; }
+
+    public Car() : this("Unknown", "Unknown", 0)  // Calls another constructor
+    {
+    }
+
+    public Car(string make, string model) : this(make, model, 0)  // Calls another constructor
+    {
+    }
+
+    public Car(string make, string model, int year)
+    {
+        Make = make;
+        Model = model;
+        Year = year;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine("Make: " + Make + ", Model: " + Model + ", Year: " + Year);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Car car = new Car("Toyota", "Corolla", 2021);
+        car.DisplayInfo();
+    }
+}
+Make: Toyota, Model: Corolla, Year: 2021
+
+Public, Private, and Protected Constructors
+Explanation:
+
+Public Constructor: Can be accessed from outside the class.
+Private Constructor: Cannot be accessed from outside the class and is typically used in Singleton pattern.
+Protected Constructor: Can be accessed only within the class and by derived classes.
+Example:
+class Singleton
+{
+    private static Singleton instance = null;
+    private Singleton() { }  // Private constructor
+
+    public static Singleton Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new Singleton();
+            }
+            return instance;
+        }
+    }
+
+    public void DisplayMessage()
+    {
+        Console.WriteLine("Singleton instance created.");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Singleton obj = Singleton.Instance;
+        obj.DisplayMessage();
+    }
+}
+Singleton instance created.
+
+Understanding Static Constructor
+Explanation: A static constructor is used to initialize static members of a class. It is called automatically before any static members are accessed or any instances of the class are created.
+
+Example:
+class StaticExample
+{
+    public static int Counter;
+
+    static StaticExample()
+    {
+        Counter = 100;
+        Console.WriteLine("Static constructor called.");
+    }
+
+    public StaticExample()
+    {
+        Counter++;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Counter before object creation: " + StaticExample.Counter);
+
+        StaticExample obj1 = new StaticExample();
+        StaticExample obj2 = new StaticExample();
+
+        Console.WriteLine("Counter after object creation: " + StaticExample.Counter);
+    }
+}
+Static constructor called.
+Counter before object creation: 100
+Counter after object creation: 102
+
+
+Implementing Singleton Design Pattern and Understanding Static Class
+Explanation: The Singleton pattern ensures that a class has only one instance and provides a global point of access to that instance. Static classes are often used in implementing the Singleton pattern.
+
+Example:
+class Singleton
+{
+    private static Singleton instance = null;
+    private Singleton() { }  // Private constructor
+
+    public static Singleton Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new Singleton();
+            }
+            return instance;
+        }
+    }
+
+    public void DisplayMessage()
+    {
+        Console.WriteLine("Singleton instance is working.");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Singleton obj = Singleton.Instance;
+        obj.DisplayMessage();
+    }
+}
+Singleton instance is working.
+
+Module 15: Polymorphism in C#
+Concepts Covered:
+
+Polymorphism Using Methods
+Overloading a Method
+Overriding Virtual Method
+Abstract Class and Abstract Method
+Interface Implementation
+Interface Inheritance and Implementation
+Using Sealed Class and Sealed Method
+Differentiating Virtual Method, Abstract Method, and Interface
+Overloading a Method
+Explanation: Method overloading allows multiple methods in the same class to have the same name but with different parameters.
+
+Example:
+class MathOperations
+{
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    public int Add(int a, int b, int c)
+    {
+        return a + b + c;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        MathOperations math = new MathOperations();
+        int sum1 = math.Add(5, 10);
+        int sum2 = math.Add(5, 10, 15);
+
+        Console.WriteLine("Sum1: " + sum1);
+        Console.WriteLine("Sum2: " + sum2);
+    }
+}
+Sum1: 15
+Sum2: 30
+
+Overriding Virtual Method
+Explanation: Method overriding allows a derived class to provide a specific implementation of a method that is already defined in its base class using the virtual and override keywords.
+
+Example:
+class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal sound...");
+    }
+}
+
+class Dog : Animal
+{
+    public override void Speak()
+    {
+        Console.WriteLine("Bark...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Animal myAnimal = new Animal();
+        myAnimal.Speak();
+
+        Dog myDog = new Dog();
+        myDog.Speak();
+    }
+}
+Animal sound...
+Bark...
+
+
+Abstract Class and Abstract Method
+Explanation: An abstract class cannot be instantiated and is meant to be inherited. An abstract method is a method declared in an abstract class that must be overridden in derived classes.
+
+Example:
+abstract class Animal
+{
+    public abstract void MakeSound();
+
+    public void Sleep()
+    {
+        Console.WriteLine("Sleeping...");
+    }
+}
+
+class Dog : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Bark...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog dog = new Dog();
+        dog.MakeSound();
+        dog.Sleep();
+    }
+}
+Bark...
+Sleeping...
+
+Interface Implementation
+Explanation: Interfaces define a contract that implementing classes must adhere to. An interface can contain declarations of methods, properties, events, and indexers.
+
+Example:
+interface IAnimal
+{
+    void MakeSound();
+}
+
+class Dog : IAnimal
+{
+    public void MakeSound()
+    {
+        Console.WriteLine("Bark...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        IAnimal animal = new Dog();
+        animal.MakeSound();
+    }
+}
+Bark...
+
+Interface Inheritance and Implementation
+Explanation: An interface can inherit from one or more interfaces. A class that implements an interface must implement all members of that interface.
+
+Example:
+interface IAnimal
+{
+    void MakeSound();
+}
+
+interface IPet
+{
+    void Play();
+}
+
+class Dog : IAnimal, IPet
+{
+    public void MakeSound()
+    {
+        Console.WriteLine("Bark...");
+    }
+
+    public void Play()
+    {
+        Console.WriteLine("Playing...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog dog = new Dog();
+        dog.MakeSound();
+        dog.Play();
+    }
+}
+Bark...
+Playing...
+
+Using Sealed Class and Sealed Method
+Explanation: A sealed class cannot be inherited. A sealed method in a class prevents further overriding by derived classes.
+
+Example:
+class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal sound...");
+    }
+}
+
+class Dog : Animal
+{
+    public sealed override void Speak()
+    {
+        Console.WriteLine("Bark...");
+    }
+}
+
+class GermanShepherd : Dog
+{
+    // This will cause a compile-time error because Speak is sealed in Dog class
+    // public override void Speak()
+    // {
+    //     Console.WriteLine("German Shepherd Bark...");
+    // }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        GermanShepherd dog = new GermanShepherd();
+        dog.Speak();
+    }
+}
+Bark...
+
+Differentiating Virtual Method, Abstract Method, and Interface
+Explanation:
+
+Virtual Method: Provides a base implementation that derived classes can override.
+Abstract Method: Declares a method without any implementation in the base class. Derived classes must provide an implementation.
+Interface: Defines a contract without implementation. Any class implementing the interface must provide implementations for all its members.
+Example:
+abstract class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal sound...");
+    }
+
+    public abstract void MakeSound();
+}
+
+interface IPet
+{
+    void Play();
+}
+
+class Dog : Animal, IPet
+{
+    public override void Speak()
+    {
+        Console.WriteLine("Bark...");
+    }
+
+    public override void MakeSound()
+    {
+        Console.WriteLine("Bark... (Abstract method implementation)");
+    }
+
+    public void Play()
+    {
+        Console.WriteLine("Playing...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog dog = new Dog();
+        dog.Speak();
+        dog.MakeSound();
+        dog.Play();
+    }
+}
+Bark...
+Bark... (Abstract method implementation)
+Playing...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
