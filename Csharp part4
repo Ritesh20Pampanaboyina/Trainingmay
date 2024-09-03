@@ -1,0 +1,673 @@
+Module 16: Operators and Equality Comparison
+Concepts Covered:
+
+Introduction to Operators
+Operator Overloading
+Equality Comparison Operators and Methods
+Comparing Value Equality
+Comparing Reference Equality
+Using ==, Equals, ReferenceEquals, CompareTo
+Comparison by GetHashCode Method
+Overriding Methods and Operators for Equality Comparison
+Overriding ToString Method
+Introduction to Operators
+Explanation: Operators are symbols that tell the compiler to perform specific mathematical or logical operations.
+
+Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int a = 5;
+        int b = 10;
+
+        int sum = a + b;  // Addition
+        int difference = b - a;  // Subtraction
+        int product = a * b;  // Multiplication
+        int quotient = b / a;  // Division
+        int remainder = b % a;  // Modulus
+
+        Console.WriteLine("Sum: " + sum);
+        Console.WriteLine("Difference: " + difference);
+        Console.WriteLine("Product: " + product);
+        Console.WriteLine("Quotient: " + quotient);
+        Console.WriteLine("Remainder: " + remainder);
+    }
+}
+Sum: 15
+Difference: 5
+Product: 50
+Quotient: 2
+Remainder: 0
+
+Operator Overloading
+Explanation: Operator overloading allows you to define how operators behave with user-defined types.
+
+Example:
+class Complex
+{
+    public int Real { get; set; }
+    public int Imaginary { get; set; }
+
+    public Complex(int real, int imaginary)
+    {
+        Real = real;
+        Imaginary = imaginary;
+    }
+
+    // Overloading the + operator
+    public static Complex operator +(Complex c1, Complex c2)
+    {
+        return new Complex(c1.Real + c2.Real, c1.Imaginary + c2.Imaginary);
+    }
+
+    public override string ToString()
+    {
+        return $"{Real} + {Imaginary}i";
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Complex c1 = new Complex(1, 2);
+        Complex c2 = new Complex(3, 4);
+        Complex c3 = c1 + c2;
+
+        Console.WriteLine("Result of adding c1 and c2: " + c3);
+    }
+}
+Result of adding c1 and c2: 4 + 6i
+
+Equality Comparison Operators and Methods
+Explanation: Equality comparison in C# can be performed using the == operator, Equals method, and ReferenceEquals method. Additionally, you can override GetHashCode and Equals methods for custom types.
+
+Example:
+class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        Person other = (Person)obj;
+        return Name == other.Name && Age == other.Age;
+    }
+
+    public override int GetHashCode()
+    {
+        return (Name, Age).GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"{Name}, {Age} years old";
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person p1 = new Person { Name = "Alice", Age = 30 };
+        Person p2 = new Person { Name = "Alice", Age = 30 };
+
+        Console.WriteLine("Using == operator: " + (p1 == p2));
+        Console.WriteLine("Using Equals method: " + p1.Equals(p2));
+        Console.WriteLine("Using ReferenceEquals: " + ReferenceEquals(p1, p2));
+    }
+}
+Using == operator: False
+Using Equals method: True
+Using ReferenceEquals: False
+
+Overriding ToString Method
+Explanation: The ToString method can be overridden to provide a meaningful string representation of an object.
+
+Example:
+class Car
+{
+    public string Make { get; set; }
+    public string Model { get; set; }
+    public int Year { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Year} {Make} {Model}";
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Car car = new Car { Make = "Toyota", Model = "Camry", Year = 2021 };
+        Console.WriteLine(car.ToString());
+    }
+}
+2021 Toyota Camry
+
+Module 17: Exception Handling
+Concepts Covered:
+
+Checked and Unchecked Statements
+try, catch, and finally
+Creating Custom Exceptions
+Exception Handling Best Practices
+Do’s and Don’ts of Exception Handling
+Checked and Unchecked Statements
+Explanation: The checked keyword is used to explicitly enable overflow checking for arithmetic operations and conversions. Conversely, the unchecked keyword disables overflow checking.
+
+Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int maxInt = int.MaxValue;
+
+        try
+        {
+            int result = checked(maxInt + 1);  // OverflowException will be thrown
+            Console.WriteLine("Checked result: " + result);
+        }
+        catch (OverflowException ex)
+        {
+            Console.WriteLine("Overflow occurred: " + ex.Message);
+        }
+
+        int uncheckedResult = unchecked(maxInt + 1);  // No exception will be thrown
+        Console.WriteLine("Unchecked result: " + uncheckedResult);
+    }
+}
+Overflow occurred: Arithmetic operation resulted in an overflow.
+Unchecked result: -2147483648
+
+try, catch, and finally
+Explanation: The try block contains the code that may throw an exception. The catch block handles the exception, and the finally block contains code that will always execute regardless of whether an exception was thrown or not.
+
+Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        try
+        {
+            int[] numbers = { 1, 2, 3 };
+            Console.WriteLine(numbers[5]);  // This will throw an IndexOutOfRangeException
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
+        finally
+        {
+            Console.WriteLine("This is the finally block, it always runs.");
+        }
+    }
+}
+An error occurred: Index was outside the bounds of the array.
+This is the finally block, it always runs.
+
+Creating Custom Exceptions
+Explanation: You can create custom exceptions by inheriting from the Exception class.
+
+Example:
+class InvalidAgeException : Exception
+{
+    public InvalidAgeException(string message) : base(message) { }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        try
+        {
+            int age = 15;
+            if (age < 18)
+            {
+                throw new InvalidAgeException("Age must be 18 or older.");
+            }
+        }
+        catch (InvalidAgeException ex)
+        {
+            Console.WriteLine("Custom exception caught: " + ex.Message);
+        }
+    }
+}
+Custom exception caught: Age must be 18 or older.
+
+Exception Handling Best Practices
+Best Practices:
+
+Catch Specific Exceptions: Always catch specific exceptions rather than a general Exception to avoid handling unexpected errors.
+Use finally Block: Use the finally block to release resources, close connections, etc.
+Do Not Swallow Exceptions: Avoid catching exceptions without handling them properly. Log them or take corrective actions.
+Avoid Overusing Exceptions: Exceptions should be used for exceptional conditions, not for regular control flow.
+Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        try
+        {
+            int divisor = 0;
+            int result = 10 / divisor;  // This will throw a DivideByZeroException
+        }
+        catch (DivideByZeroException ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+        finally
+        {
+            Console.WriteLine("Cleaning up resources...");
+        }
+    }
+}
+Error: Attempted to divide by zero.
+Cleaning up resources...
+
+Module 18: Collection Classes in C#
+Concepts Covered:
+
+Understanding Collections
+Using Different Collections (e.g., ArrayList, Stack, Queue, SortedList)
+Understanding Different Interfaces (e.g., IEnumerable, IEnumerator, IComparable, IComparer, IList, IEquatable)
+Hashing Mechanism
+Generic Collection Classes
+Performance Improvement using Generic Collection over Non-Generic Version
+Understanding Collections
+Explanation: Collections are used to store, manage, and manipulate groups of related objects. C# provides various collection classes in the System.Collections and System.Collections.Generic namespaces.
+
+Example:
+using System.Collections;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        ArrayList arrayList = new ArrayList();
+        arrayList.Add(1);
+        arrayList.Add("Two");
+        arrayList.Add(3.0);
+
+        foreach (var item in arrayList)
+        {
+            Console.WriteLine(item);
+        }
+    }
+}
+1
+Two
+3
+
+Using Different Collections
+Example: Using Stack
+using System.Collections;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Stack stack = new Stack();
+        stack.Push(1);
+        stack.Push(2);
+        stack.Push(3);
+
+        Console.WriteLine("Popping from stack: " + stack.Pop());
+        Console.WriteLine("Peek at stack: " + stack.Peek());
+    }
+}
+Popping from stack: 3
+Peek at stack: 2
+
+Example: Using Queue
+using System.Collections;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Queue queue = new Queue();
+        queue.Enqueue(1);
+        queue.Enqueue(2);
+        queue.Enqueue(3);
+
+        Console.WriteLine("Dequeuing from queue: " + queue.Dequeue());
+        Console.WriteLine("Peek at queue: " + queue.Peek());
+    }
+}
+Dequeuing from queue: 1
+Peek at queue: 2
+
+Understanding Different Interfaces
+Explanation:
+
+IEnumerable: Exposes an enumerator, which supports a simple iteration over a collection of a specified type.
+IEnumerator: Supports a simple iteration over a collection.
+IComparable: Defines a method that a type implements to compare its instances.
+IComparer: Defines a method that compares two objects.
+IList: Represents a collection of objects that can be individually accessed by index.
+IEquatable: Defines a generalized method that a value type or class implements to create a type-specific method for determining equality.
+Example: Implementing IComparable and IComparer
+using System;
+using System.Collections.Generic;
+
+class Person : IComparable<Person>
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public int CompareTo(Person other)
+    {
+        return this.Age.CompareTo(other.Age);
+    }
+
+    public override string ToString()
+    {
+        return $"{Name}, Age: {Age}";
+    }
+}
+
+class NameComparer : IComparer<Person>
+{
+    public int Compare(Person x, Person y)
+    {
+        return x.Name.CompareTo(y.Name);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Person> people = new List<Person>
+        {
+            new Person { Name = "Alice", Age = 30 },
+            new Person { Name = "Bob", Age = 25 },
+            new Person { Name = "Charlie", Age = 35 }
+        };
+
+        people.Sort();
+        Console.WriteLine("Sorted by Age:");
+        foreach (var person in people)
+        {
+            Console.WriteLine(person);
+        }
+
+        people.Sort(new NameComparer());
+        Console.WriteLine("\nSorted by Name:");
+        foreach (var person in people)
+        {
+            Console.WriteLine(person);
+        }
+    }
+}
+Sorted by Age:
+Bob, Age: 25
+Alice, Age: 30
+Charlie, Age: 35
+
+Sorted by Name:
+Alice, Age: 30
+Bob, Age: 25
+Charlie, Age: 35
+
+
+Hashing Mechanism
+Explanation: Hashing is used to generate a fixed-size value (hash code) from data input, which can then be used for fast data retrieval. In C#, you can override the GetHashCode method to provide custom hashing for objects.
+
+Example:
+class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public override int GetHashCode()
+    {
+        return (Name, Age).GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"{Name}, Age: {Age}";
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person person = new Person { Name = "Alice", Age = 30 };
+        Console.WriteLine("Hash Code: " + person.GetHashCode());
+    }
+}
+Hash Code: [varies based on internal hash algorithm]
+
+Generic Collection Classes
+Explanation: Generics allow you to define classes, methods, and data structures with a placeholder for the data type, which improves type safety and performance.
+
+Example: Using List<T>
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<int> numbers = new List<int> { 1, 2, 3, 4, 5 };
+        numbers.Add(6);
+
+        foreach (int number in numbers)
+        {
+            Console.WriteLine(number);
+        }
+    }
+}
+1
+2
+3
+4
+5
+6
+
+Performance Improvement Using Generic Collection over Non-Generic Version
+Explanation: Generic collections (List<T>, Dictionary<TKey,TValue>, etc.) provide better performance compared to non-generic collections (ArrayList, Hashtable, etc.) because they avoid boxing/unboxing operations and provide type safety at compile time.
+
+Example:
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Non-generic collection
+        ArrayList arrayList = new ArrayList();
+        arrayList.Add(1);
+        arrayList.Add(2);
+        arrayList.Add(3);
+        int nonGenericSum = 0;
+        foreach (int item in arrayList)  // Requires casting
+        {
+            nonGenericSum += item;
+        }
+        Console.WriteLine("Non-Generic Sum: " + nonGenericSum);
+
+        // Generic collection
+        List<int> list = new List<int> { 1, 2, 3 };
+        int genericSum = 0;
+        foreach (int item in list)
+        {
+            genericSum += item;
+        }
+        Console.WriteLine("Generic Sum: " + genericSum);
+    }
+}
+Non-Generic Sum: 6
+Generic Sum: 6
+
+
+Module 19: Delegates and Events in C#
+Concepts Covered:
+
+Creating and Using Delegates
+Multicast Delegates
+Anonymous Method
+When to Use Delegates, Events, and Interfaces
+Covariance and Contravariance in Delegates
+Generic Delegates
+Comparing C++ Templates and C# Delegates
+Implementing Polymorphism Using Delegates
+Defining and Using Events
+Creating Custom Events and Using Them
+Passing Event Arguments
+Creating and Using Delegates
+Explanation: A delegate is a type-safe function pointer that allows methods to be passed as parameters or assigned to variables.
+
+Example:
+// Define a delegate
+delegate void GreetDelegate(string name);
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Create an instance of the delegate
+        GreetDelegate greet = GreetUser;
+
+        // Invoke the delegate
+        greet("Alice");
+    }
+
+    static void GreetUser(string name)
+    {
+        Console.WriteLine("Hello, " + name);
+    }
+}
+Hello, Alice
+
+Multicast Delegates
+Explanation: Multicast delegates are delegates that point to multiple methods. When invoked, all methods in the invocation list are called.
+
+Example:
+delegate void NotifyDelegate();
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        NotifyDelegate notify = NotifyMethod1;
+        notify += NotifyMethod2;
+
+        notify();
+    }
+
+    static void NotifyMethod1()
+    {
+        Console.WriteLine("Notification from Method 1");
+    }
+
+    static void NotifyMethod2()
+    {
+        Console.WriteLine("Notification from Method 2");
+    }
+}
+Notification from Method 1
+Notification from Method 2
+
+Anonymous Method
+Explanation: Anonymous methods provide a way to define inline methods without explicitly declaring them.
+
+Example:
+delegate void PrintDelegate(string message);
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Using an anonymous method
+        PrintDelegate print = delegate (string msg)
+        {
+            Console.WriteLine(msg);
+        };
+
+        print("Hello from anonymous method");
+    }
+}
+Hello from anonymous method
+
+When to Use Delegates, Events, and Interfaces
+Explanation:
+
+Delegates: Used when you need to pass methods as parameters or handle callbacks.
+Events: Used to notify other classes or objects when something happens, such as a button click.
+Interfaces: Used when you need to define a contract for classes that implement it, promoting code reusability and abstraction.
+Example:
+delegate void ButtonClickHandler();
+
+class Button
+{
+    public event ButtonClickHandler Click;
+
+    public void SimulateClick()
+    {
+        if (Click != null)
+        {
+            Click();
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Button button = new Button();
+        button.Click += ButtonClicked;
+
+        button.SimulateClick();
+    }
+
+    static void ButtonClicked()
+    {
+        Console.WriteLine("Button was clicked!");
+    }
+}
+Button was clicked!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
