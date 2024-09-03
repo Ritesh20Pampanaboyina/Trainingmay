@@ -1,0 +1,738 @@
+Module 24: Threading
+Concepts Covered:
+
+Threading & Synchronization
+Lifecycle of a Thread
+Different Thread Methods and Properties
+Synchronizing Critical Data Using Synchronization Objects
+Thread Pool
+Threading & Synchronization
+Explanation: Threading allows multiple operations to run concurrently within a program. Synchronization ensures that shared resources are accessed in a thread-safe manner to avoid conflicts.
+
+Example:
+using System;
+using System.Threading;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Thread t1 = new Thread(PrintNumbers);
+        Thread t2 = new Thread(PrintNumbers);
+
+        t1.Start();
+        t2.Start();
+
+        t1.Join();
+        t2.Join();
+    }
+
+    static void PrintNumbers()
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            Console.WriteLine(i);
+            Thread.Sleep(100);
+        }
+    }
+}
+1
+1
+2
+2
+3
+3
+4
+4
+5
+5
+
+Lifecycle of a Thread
+Explanation: A thread in C# has several states: Unstarted, Running, WaitSleepJoin, Suspended, Stopped, etc. The lifecycle includes thread creation, starting, running, blocking (e.g., sleeping), and termination.
+
+Different Thread Methods and Properties
+Explanation:
+
+Start(): Starts the thread.
+Abort(): Attempts to terminate the thread (not recommended in modern .NET versions).
+Sleep(): Pauses the thread for a specified period.
+Join(): Blocks the calling thread until the thread has finished execution.
+Synchronizing Critical Data Using Synchronization Objects
+Explanation: Synchronization objects like lock, Mutex, Semaphore, and Monitor are used to ensure that only one thread can access a critical section of code at a time.
+
+Example Using lock:
+using System;
+using System.Threading;
+
+class Program
+{
+    static object locker = new object();
+
+    static void Main(string[] args)
+    {
+        Thread t1 = new Thread(PrintNumbers);
+        Thread t2 = new Thread(PrintNumbers);
+
+        t1.Start();
+        t2.Start();
+
+        t1.Join();
+        t2.Join();
+    }
+
+    static void PrintNumbers()
+    {
+        lock (locker)
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                Console.WriteLine(i);
+                Thread.Sleep(100);
+            }
+        }
+    }
+}
+1
+2
+3
+4
+5
+1
+2
+3
+4
+5
+
+Thread Pool
+Explanation: A thread pool is a collection of threads that can be used to perform tasks in the background. The .NET ThreadPool class manages a pool of worker threads that can be used for short-running tasks.
+
+Example:
+using System;
+using System.Threading;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        ThreadPool.QueueUserWorkItem(PrintNumbers);
+        ThreadPool.QueueUserWorkItem(PrintNumbers);
+
+        Console.ReadLine();  // Wait for user input to prevent the program from ending
+    }
+
+    static void PrintNumbers(object state)
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            Console.WriteLine(i);
+            Thread.Sleep(100);
+        }
+    }
+}
+1
+2
+3
+4
+5
+1
+2
+3
+4
+5
+
+Module 25: Language Enhancements in C# 2.0
+Concepts Covered:
+
+Static Classes
+Property Accessors
+External Aliases
+Nullable Types
+Iterators
+Partial Types
+Generics
+Static Classes
+Explanation: A static class in C# cannot be instantiated and can contain only static members. It is useful for utility or helper classes.
+
+Example:
+static class MathHelper
+{
+    public static int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    public static int Multiply(int a, int b)
+    {
+        return a * b;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int sum = MathHelper.Add(5, 10);
+        int product = MathHelper.Multiply(5, 10);
+
+        Console.WriteLine("Sum: " + sum);
+        Console.WriteLine("Product: " + product);
+    }
+}
+Sum: 15
+Product: 50
+
+Property Accessors
+Explanation: Property accessors (get and set) are used to read from and write to private fields in a class.
+
+Example:
+class Person
+{
+    private string name;
+
+    public string Name
+    {
+        get { return name; }
+        set { name = value; }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person person = new Person();
+        person.Name = "Alice";
+        Console.WriteLine("Name: " + person.Name);
+    }
+}
+Name: Alice
+
+External Aliases
+Explanation: External aliases are used to resolve naming conflicts between different assemblies that contain types with the same name. This is more advanced and not commonly used in day-to-day coding.
+
+Nullable Types
+Explanation: Nullable types allow value types (e.g., int, bool, DateTime) to represent null values. This is useful when dealing with databases or other scenarios where data may be missing.
+
+Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int? nullableInt = null;
+        if (nullableInt.HasValue)
+        {
+            Console.WriteLine("Value: " + nullableInt.Value);
+        }
+        else
+        {
+            Console.WriteLine("No value (null).");
+        }
+
+        nullableInt = 10;
+        Console.WriteLine("Value: " + nullableInt.Value);
+    }
+}
+No value (null).
+Value: 10
+
+Iterators
+Explanation: Iterators allow you to define custom iteration behavior using the yield keyword. This can be used to return a sequence of values one at a time.
+
+Example:
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        foreach (int number in GetNumbers())
+        {
+            Console.WriteLine(number);
+        }
+    }
+
+    static IEnumerable<int> GetNumbers()
+    {
+        yield return 1;
+        yield return 2;
+        yield return 3;
+    }
+}
+1
+2
+3
+
+Partial Types
+Explanation: Partial types allow a class, struct, or interface to be split across multiple files. This is useful for organizing large classes.
+
+Example: File 1:
+partial class Person
+{
+    public string Name { get; set; }
+}
+
+File 2:
+partial class Person
+{
+    public int Age { get; set; }
+}
+
+Main Program:
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person person = new Person { Name = "Alice", Age = 30 };
+        Console.WriteLine($"{person.Name}, {person.Age} years old");
+    }
+}
+Alice, 30 years old
+
+Generics
+Explanation: Generics allow you to define a class, method, delegate, or interface with a placeholder for the data type. This improves type safety and reusability.
+
+Example:
+class Box<T>
+{
+    private T content;
+
+    public void Add(T item)
+    {
+        content = item;
+    }
+
+    public T Get()
+    {
+        return content;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Box<int> intBox = new Box<int>();
+        intBox.Add(123);
+        Console.WriteLine("Int Box: " + intBox.Get());
+
+        Box<string> strBox = new Box<string>();
+        strBox.Add("Hello");
+        Console.WriteLine("String Box: " + strBox.Get());
+    }
+}
+Int Box: 123
+String Box: Hello
+
+Module 26: Assemblies in C#
+Concepts Covered:
+
+Creating Assemblies
+Loading Assemblies
+Global Assembly Cache (GAC)
+Assembly Manifest
+Strong Name Assemblies
+Versioning in .NET
+Using Reflection to Load Assembly at Runtime
+Creating Assemblies
+Explanation: An assembly is a compiled code library used for deployment, versioning, and security. In .NET, assemblies can be either executable files (.exe) or dynamic link libraries (.dll).
+Example: You can create an assembly in Visual Studio by compiling a C# project. Here’s a simple class library example:
+// File: Calculator.cs
+public class Calculator
+{
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+}
+
+To create the DLL:
+
+In Visual Studio, create a new Class Library project.
+Add the Calculator.cs file.
+Build the project to create the Calculator.dll assembly.
+Loading Assemblies
+Explanation: Assemblies can be loaded dynamically at runtime using the Assembly.Load method or through the Reflection namespace.
+
+Example:
+using System;
+using System.Reflection;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Assembly assembly = Assembly.LoadFrom("Calculator.dll");
+        Type calculatorType = assembly.GetType("Calculator");
+        object calculatorInstance = Activator.CreateInstance(calculatorType);
+        MethodInfo addMethod = calculatorType.GetMethod("Add");
+
+        int result = (int)addMethod.Invoke(calculatorInstance, new object[] { 5, 10 });
+        Console.WriteLine("Result: " + result);
+    }
+}
+Result: 15
+
+Global Assembly Cache (GAC)
+Explanation: The Global Assembly Cache (GAC) is a machine-wide repository used to store assemblies that are shared by multiple applications. Assemblies that need to be accessible by many applications on a system should be placed in the GAC.
+
+Steps to Add an Assembly to the GAC:
+
+Strong name your assembly using sn.exe tool.
+Use the gacutil.exe tool to add the assembly to the GAC.
+Assembly Manifest
+Explanation: An assembly manifest contains metadata about the assembly, including its version, culture, public key token (for strong-named assemblies), and the list of files that make up the assembly.
+
+Example: To view an assembly manifest, you can use tools like ILDasm (Intermediate Language Disassembler) provided by the .NET SDK.
+
+Strong Name Assemblies
+Explanation: Strong-named assemblies are signed with a public/private key pair. This ensures that the assembly is uniquely identifiable and prevents tampering.
+
+Steps to Create a Strong-Named Assembly:
+
+Generate a key pair using sn.exe:
+sn -k keyfile.snk
+
+Sign the assembly with the key using the [assembly: AssemblyKeyFile("keyfile.snk")] attribute in the AssemblyInfo.cs file.
+Versioning in .NET
+Explanation: Versioning in .NET helps manage different versions of an assembly. The assembly version is specified in the AssemblyInfo.cs file.
+
+Example:
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+
+
+Explanation:
+
+AssemblyVersion: This is the version number used by the CLR during binding.
+AssemblyFileVersion: This is the version number seen in the file properties.
+Using Reflection to Load Assembly at Runtime
+Explanation: Reflection allows you to load an assembly and access its types, methods, and properties at runtime.
+Example (Already Covered Above): The previous example of dynamically loading the Calculator.dll assembly using Reflection is an illustration of this concept.
+
+
+Module 27: Remoting in C#
+Concepts Covered:
+
+Remoting Architecture
+Remotable and Non-Remotable Objects
+Serialization in Remoting
+Server-Activated and Client-Activated Objects
+Channels
+MarshalByRefObject and Application Domains
+Proxy Objects
+Remoting Architecture
+Explanation: Remoting allows applications to communicate with each other across application domains, processes, or network boundaries. It enables objects in different locations to interact as though they were in the same process.
+
+Diagram Explanation:
+
+Client: The client application makes a call to a remote object.
+Proxy: A proxy object on the client side forwards the call to the server.
+Channel: The channel transmits the request over a communication protocol like TCP or HTTP.
+Server: The server receives the request, processes it, and returns the result to the client via the proxy.
+Remotable and Non-Remotable Objects
+Explanation:
+
+Remotable Objects: Objects that can be accessed across application domains. These derive from MarshalByRefObject.
+Non-Remotable Objects: Objects that cannot be accessed remotely and must be serialized to be passed between application domains.
+Example:
+public class RemoteObject : MarshalByRefObject
+{
+    public string GetMessage()
+    {
+        return "Hello from the remote object!";
+    }
+}
+
+
+Serialization in Remoting
+Explanation: Serialization in remoting involves converting an object into a format that can be transmitted over a network. Objects passed by value must be serializable.
+
+Example:
+[Serializable]
+public class SerializableObject
+{
+    public string Data { get; set; }
+}
+Server-Activated and Client-Activated Objects
+Explanation:
+
+Server-Activated Objects (SAO): The server controls the object's lifetime. There are two types:
+Singleton: A single instance serves all clients.
+SingleCall: A new instance is created for each request.
+Client-Activated Objects (CAO): The client controls the object's lifetime, and each client gets its own instance.
+Channels
+Explanation: Channels are the communication paths used in remoting to send messages between clients and servers. Common channels include TCP and HTTP channels.
+
+MarshalByRefObject and Application Domains
+Explanation:
+
+MarshalByRefObject: A base class for objects that can be marshaled by reference across application domain boundaries.
+Application Domains: Isolated environments where applications execute. Each application domain is isolated from others, and objects can be remoted across domains.
+Proxy Objects
+Explanation: A proxy object acts as a stand-in for the real object on the client side. It handles method calls and forwards them to the actual remote object.
+
+Module 28: Attributes in C#
+Concepts Covered:
+
+Applying and Accessing Attributes
+Predefined Attributes
+Creating Custom Attributes
+Applying and Accessing Attributes
+Explanation: Attributes are metadata applied to code elements like classes, methods, and properties. Attributes provide additional information to the compiler and runtime.
+
+Example:
+[Obsolete("This method is obsolete. Use NewMethod instead.")]
+public void OldMethod()
+{
+    Console.WriteLine("Old method");
+}
+
+public void NewMethod()
+{
+    Console.WriteLine("New method");
+}
+Output: A compiler warning will be generated if OldMethod is used.
+
+Predefined Attributes
+Explanation: C# provides several predefined attributes:
+
+[Obsolete]: Marks a program element as obsolete.
+[Serializable]: Indicates that a class can be serialized.
+[DllImport]: Imports a method from an unmanaged DLL.
+Example:
+[Serializable]
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+Creating Custom Attributes
+Explanation: You can create custom attributes by deriving from System.Attribute.
+
+Example:
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+public class AuthorAttribute : Attribute
+{
+    public string Name { get; }
+    public AuthorAttribute(string name)
+    {
+        Name = name;
+    }
+}
+
+[Author("Alice")]
+public class SampleClass
+{
+    [Author("Bob")]
+    public void SampleMethod()
+    {
+        Console.WriteLine("This is a sample method.");
+    }
+}
+
+Accessing the Attribute:
+class Program
+{
+    static void Main(string[] args)
+    {
+        Type type = typeof(SampleClass);
+        object[] attributes = type.GetCustomAttributes(typeof(AuthorAttribute), false);
+        foreach (AuthorAttribute attr in attributes)
+        {
+            Console.WriteLine("Class Author: " + attr.Name);
+        }
+
+        MethodInfo method = type.GetMethod("SampleMethod");
+        attributes = method.GetCustomAttributes(typeof(AuthorAttribute), false);
+        foreach (AuthorAttribute attr in attributes)
+        {
+            Console.WriteLine("Method Author: " + attr.Name);
+        }
+    }
+}
+Class Author: Alice
+Method Author: Bob
+
+Module 29: Advanced Concepts in C#
+Concepts Covered:
+
+Delegates and Events (Advanced Topics)
+Multithreading (Advanced Topics)
+Async Programming with async and await
+Task Parallel Library (TPL)
+LINQ (Language Integrated Query)
+Delegates and Events (Advanced Topics)
+Explanation: Advanced topics in delegates and events include understanding covariance and contravariance, multicast delegates, and event patterns like the EventHandler and EventHandler<T>.
+
+Example: Multicast Delegates
+delegate void Notify();
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Notify notify = NotifyMethod1;
+        notify += NotifyMethod2;
+        notify.Invoke();
+    }
+
+    static void NotifyMethod1()
+    {
+        Console.WriteLine("Notification from Method 1");
+    }
+
+    static void NotifyMethod2()
+    {
+        Console.WriteLine("Notification from Method 2");
+    }
+}
+Notification from Method 1
+Notification from Method 2
+
+Multithreading (Advanced Topics)
+Explanation: Advanced multithreading involves thread synchronization using locks, mutexes, semaphores, and understanding race conditions, deadlocks, and thread safety.
+
+Example:
+using System;
+using System.Threading;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Thread t1 = new Thread(PrintNumbers);
+        Thread t2 = new Thread(PrintNumbers);
+
+        t1.Start();
+        t2.Start();
+
+        t1.Join();
+        t2.Join();
+    }
+
+    static void PrintNumbers()
+    {
+        lock (typeof(Program))
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                Console.WriteLine(i);
+                Thread.Sleep(100);
+            }
+        }
+    }
+}
+1
+2
+3
+4
+5
+1
+2
+3
+4
+5
+
+Async Programming with async and await
+Explanation: Async programming allows you to write non-blocking code using the async and await keywords. This is useful for I/O-bound operations like reading files or making network requests.
+
+Example:
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        string url = "https://jsonplaceholder.typicode.com/posts/1";
+        string result = await GetDataAsync(url);
+        Console.WriteLine(result);
+    }
+
+    static async Task<string> GetDataAsync(string url)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            return await client.GetStringAsync(url);
+        }
+    }
+}
+Output: The program will asynchronously fetch data from the provided URL and print the result.
+
+Task Parallel Library (TPL)
+Explanation: The Task Parallel Library (TPL) is a set of APIs for parallel programming. It simplifies parallelism and provides features like the Task class, parallel loops, and PLINQ (Parallel LINQ).
+
+Example:
+using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Task[] tasks = new Task[3]
+        {
+            Task.Run(() => DoWork(1)),
+            Task.Run(() => DoWork(2)),
+            Task.Run(() => DoWork(3))
+        };
+
+        Task.WaitAll(tasks);
+    }
+
+    static void DoWork(int id)
+    {
+        Console.WriteLine($"Task {id} is working...");
+        Task.Delay(1000).Wait();
+        Console.WriteLine($"Task {id} is done.");
+    }
+}
+Task 1 is working...
+Task 2 is working...
+Task 3 is working...
+Task 1 is done.
+Task 2 is done.
+Task 3 is done.
+
+LINQ (Language Integrated Query)
+Explanation: LINQ provides a way to query collections in a declarative way, similar to SQL queries, but integrated into C#.
+
+Example:
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+        var evenNumbers = from num in numbers
+                          where num % 2 == 0
+                          select num;
+
+        Console.WriteLine("Even numbers:");
+        foreach (var num in evenNumbers)
+        {
+            Console.WriteLine(num);
+        }
+    }
+}
+Even numbers:
+2
+4
+6
+8
+10
+
+
+
+
+
+
+
+
+
