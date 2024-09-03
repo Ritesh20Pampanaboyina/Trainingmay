@@ -1,0 +1,603 @@
+Module 10: Methods and Parameters using C#
+Concepts Covered:
+
+Using Methods
+Using Parameters
+Passing value type parameters
+Passing reference types (string, Array, object) as parameters
+Passing Parameters using ref and out keywords
+Static and Instance Members
+Explaining Constant and Read-only
+Using Methods
+Explanation: Methods are blocks of code that perform a specific task. They are defined within classes and are invoked to perform actions.
+
+Code Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        SayHello();
+        int sum = AddNumbers(5, 10);
+        Console.WriteLine("Sum: " + sum);
+    }
+
+    static void SayHello()
+    {
+        Console.WriteLine("Hello!");
+    }
+
+    static int AddNumbers(int a, int b)
+    {
+        return a + b;
+    }
+}
+Hello!
+Sum: 15
+
+Using Parameters
+Explanation: Parameters allow you to pass data into methods. C# supports passing parameters by value (default) and by reference.
+
+Passing Value Type Parameters Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int num1 = 5;
+        int num2 = 10;
+        int sum = AddNumbers(num1, num2);
+        Console.WriteLine("Sum: " + sum);
+    }
+
+    static int AddNumbers(int a, int b)
+    {
+        return a + b;
+    }
+}
+Sum: 15
+
+Passing Reference Type Parameters Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int[] numbers = { 1, 2, 3 };
+        ModifyArray(numbers);
+        Console.WriteLine("First element after modification: " + numbers[0]);
+    }
+
+    static void ModifyArray(int[] arr)
+    {
+        arr[0] = 100;
+    }
+}
+First element after modification: 100
+
+
+Passing Parameters using ref and out Keywords
+Explanation:
+
+ref: Used to pass a parameter by reference, meaning any changes to the parameter in the method will reflect in the original variable.
+out: Similar to ref, but the variable passed with out must be initialized inside the method.
+ref Keyword Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int num = 10;
+        DoubleValue(ref num);
+        Console.WriteLine("Doubled value: " + num);
+    }
+
+    static void DoubleValue(ref int value)
+    {
+        value *= 2;
+    }
+}
+Doubled value: 20
+
+out Keyword Example:
+class Program
+{
+    static void Main(string[] args)
+    {
+        int result;
+        CalculateSum(5, 10, out result);
+        Console.WriteLine("Sum: " + result);
+    }
+
+    static void CalculateSum(int a, int b, out int sum)
+    {
+        sum = a + b;
+    }
+}
+Sum: 15
+
+Static and Instance Members
+Explanation:
+
+Static members belong to the class itself rather than an instance of the class.
+Instance members belong to specific instances of the class.
+Example:
+class Calculator
+{
+    public static int Add(int a, int b)  // Static method
+    {
+        return a + b;
+    }
+
+    public int Multiply(int a, int b)  // Instance method
+    {
+        return a * b;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int sum = Calculator.Add(5, 10);  // Calling static method
+        Console.WriteLine("Sum: " + sum);
+
+        Calculator calc = new Calculator();
+        int product = calc.Multiply(5, 10);  // Calling instance method
+        Console.WriteLine("Product: " + product);
+    }
+}
+Sum: 15
+Product: 50
+
+Explaining Constant and Read-only
+Explanation:
+
+const: Declares a constant field or local, meaning the value cannot be changed after initialization. const is implicitly static.
+readonly: Declares a field that can only be assigned during declaration or in the constructor.
+Example:
+class Circle
+{
+    public const double Pi = 3.14159;  // Constant
+    public readonly int Radius;        // Read-only
+
+    public Circle(int radius)
+    {
+        Radius = radius;
+    }
+
+    public double CalculateArea()
+    {
+        return Pi * Radius * Radius;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Circle circle = new Circle(5);
+        Console.WriteLine("Area of the circle: " + circle.CalculateArea());
+    }
+}
+Area of the circle: 78.53975
+
+Module 11: Creating Objects in C#
+Concepts Covered:
+
+Using Constructors
+Using Initializer Lists
+Initializing Data
+Using Constructors
+Explanation: A constructor is a special method in a class that is called automatically when an instance of the class is created. Constructors are used to initialize the object.
+
+Example:
+class Person
+{
+    public string Name;
+    public int Age;
+
+    // Constructor
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine("Name: " + Name + ", Age: " + Age);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person person = new Person("John", 30);
+        person.DisplayInfo();
+    }
+}
+Name: John, Age: 30
+
+Using Initializer Lists
+Explanation: Object initializers allow you to assign values to fields or properties of an object at the time of object creation without invoking a constructor.
+
+Example:
+class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Person person = new Person
+        {
+            Name = "Alice",
+            Age = 25
+        };
+
+        Console.WriteLine("Name: " + person.Name + ", Age: " + person.Age);
+    }
+}
+Name: Alice, Age: 25
+
+Initializing Data
+Explanation: Data can be initialized through constructors, properties, or using object initializers.
+
+Example:
+class Car
+{
+    public string Make { get; set; }
+    public string Model { get; set; }
+    public int Year { get; set; }
+
+    public Car(string make, string model, int year)  // Constructor initialization
+    {
+        Make = make;
+        Model = model;
+        Year = year;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Car car = new Car("Ford", "Mustang", 2022);  // Initializing data using constructor
+        Console.WriteLine("Make: " + car.Make + ", Model: " + car.Model + ", Year: " + car.Year);
+    }
+}
+Make: Ford, Model: Mustang, Year: 2022
+
+Module 12: Properties and Indexers in C#
+Concepts Covered:
+
+Data Fields
+Properties
+Using Indexers
+Compare and Contrast between Properties and Indexers
+Data Fields
+Explanation: Fields are variables declared directly within a class or struct.
+
+Example:
+class Car
+{
+    public string Make;
+    public string Model;
+    public int Year;
+}
+
+Properties
+Explanation: Properties in C# are a way to expose fields with getter and setter methods, allowing controlled access to the data.
+
+Example:
+class Car
+{
+    private string make;
+    private string model;
+    private int year;
+
+    public string Make
+    {
+        get { return make; }
+        set { make = value; }
+    }
+
+    public string Model
+    {
+        get { return model; }
+        set { model = value; }
+    }
+
+    public int Year
+    {
+        get { return year; }
+        set { year = value; }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Car car = new Car();
+        car.Make = "Toyota";
+        car.Model = "Corolla";
+        car.Year = 2021;
+
+        Console.WriteLine("Make: " + car.Make + ", Model: " + car.Model + ", Year: " + car.Year);
+    }
+}
+Make: Toyota, Model: Corolla, Year: 2021
+
+
+Using Indexers
+Explanation: Indexers allow instances of a class or struct to be indexed just like arrays.
+
+Example:
+class WeekDays
+{
+    private string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+    public string this[int index]
+    {
+        get { return days[index]; }
+        set { days[index] = value; }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        WeekDays week = new WeekDays();
+        Console.WriteLine("First day of the week: " + week[0]);
+        week[0] = "Funday";
+        Console.WriteLine("Updated first day of the week: " + week[0]);
+    }
+}
+First day of the week: Sunday
+Updated first day of the week: Funday
+
+Compare and Contrast Between Properties and Indexers
+Explanation:
+
+Properties: Provide controlled access to data members. They use get and set methods and are typically used for single values.
+Indexers: Allow objects to be indexed in a way similar to arrays. They are used when a class contains a collection of data.
+
+
+Module 13: Inheritance in C#
+Concepts Covered:
+
+Deriving Classes
+Understanding Type Hierarchy
+Hiding Base Class Members in Derived Class
+Implementing Multi-Level Inheritance
+Using base Keyword
+Using Static Classes
+Deriving Classes
+Explanation: Inheritance allows a class (derived class) to inherit fields and methods from another class (base class). This promotes code reuse.
+
+Example:
+class Animal
+{
+    public void Eat()
+    {
+        Console.WriteLine("Eating...");
+    }
+}
+
+class Dog : Animal
+{
+    public void Bark()
+    {
+        Console.WriteLine("Barking...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog myDog = new Dog();
+        myDog.Eat();  // Inherited from Animal
+        myDog.Bark();
+    }
+}
+Eating...
+Barking...
+
+Understanding Type Hierarchy
+Explanation: In a type hierarchy, a derived class inherits members from a base class, and all classes ultimately derive from the System.Object class, the root of the .NET type hierarchy.
+
+Example:
+class LivingBeing
+{
+    public void Breathe()
+    {
+        Console.WriteLine("Breathing...");
+    }
+}
+
+class Mammal : LivingBeing
+{
+    public void Walk()
+    {
+        Console.WriteLine("Walking...");
+    }
+}
+
+class Human : Mammal
+{
+    public void Speak()
+    {
+        Console.WriteLine("Speaking...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Human person = new Human();
+        person.Breathe();  // Inherited from LivingBeing
+        person.Walk();     // Inherited from Mammal
+        person.Speak();    // Defined in Human
+    }
+}
+Breathing...
+Walking...
+Speaking...
+
+Hiding Base Class Members in Derived Class
+Explanation: Sometimes, you may want to hide a base class member in a derived class using the new keyword. This creates a new member in the derived class with the same name as the base class member.
+
+Example:
+class Animal
+{
+    public void Speak()
+    {
+        Console.WriteLine("Animal sound...");
+    }
+}
+
+class Dog : Animal
+{
+    public new void Speak()
+    {
+        Console.WriteLine("Bark...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog dog = new Dog();
+        dog.Speak();  // Calls the Speak method in the Dog class, hiding the base class method
+    }
+}
+Bark...
+
+Implementing Multi-Level Inheritance
+Explanation: Multi-level inheritance occurs when a class is derived from another derived class, forming a hierarchy.
+
+Example:
+class Vehicle
+{
+    public void StartEngine()
+    {
+        Console.WriteLine("Engine started.");
+    }
+}
+
+class Car : Vehicle
+{
+    public void Drive()
+    {
+        Console.WriteLine("Driving...");
+    }
+}
+
+class SportsCar : Car
+{
+    public void TurboBoost()
+    {
+        Console.WriteLine("Turbo boost activated!");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        SportsCar myCar = new SportsCar();
+        myCar.StartEngine();  // Inherited from Vehicle
+        myCar.Drive();        // Inherited from Car
+        myCar.TurboBoost();   // Defined in SportsCar
+    }
+}
+Engine started.
+Driving...
+Turbo boost activated!
+
+Using base Keyword
+Explanation: The base keyword is used to access members of the base class from within a derived class. It can be used to invoke a base class constructor or to access base class methods that are overridden in the derived class.
+
+Example:
+class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal sound...");
+    }
+}
+
+class Dog : Animal
+{
+    public override void Speak()
+    {
+        base.Speak();  // Calls the Speak method from the base class
+        Console.WriteLine("Bark...");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Dog dog = new Dog();
+        dog.Speak();
+    }
+}
+Animal sound...
+Bark...
+
+Using Static Classes
+Explanation: Static classes are classes that cannot be instantiated. They can only contain static members. Static classes are useful when you want to group related functions together.
+
+Example:
+static class MathOperations
+{
+    public static int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    public static int Multiply(int a, int b)
+    {
+        return a * b;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int sum = MathOperations.Add(5, 10);
+        int product = MathOperations.Multiply(5, 10);
+
+        Console.WriteLine("Sum: " + sum);
+        Console.WriteLine("Product: " + product);
+    }
+}
+Sum: 15
+Product: 50
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
